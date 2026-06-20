@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-surface: var(--surface);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-editor: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-label-sm: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono-label: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  :root {
+    --background: #faf8ff;
+    --on-background: #131b2e;
+    --primary: #3525cd;
+    --on-primary: #ffffff;
+    --primary-container: #4f46e5;
+    --on-primary-container: #dad7ff;
+    --secondary: #006c49;
+    --outline: #777587;
+    --outline-variant: #c7c4d8;
+    --surface: #faf8ff;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #f2f3ff;
+    --surface-container: #eaedff;
+    --surface-container-high: #e2e7ff;
+    --surface-container-highest: #dae2fd;
+    --on-surface: #131b2e;
+    --on-surface-variant: #464555;
+    --inverse-surface: #283044;
+    --inverse-on-surface: #eef0ff;
+  }
+
+  .dark {
+    --background: #0f111a;
+    --on-background: #eef0ff;
+    --primary: #c3c0ff;
+    --on-primary: #0f0069;
+    --primary-container: #3525cd;
+    --on-primary-container: #e2dfff;
+    --secondary: #4edea3;
+    --outline: #777587;
+    --outline-variant: #283044;
+    --surface: #131b2e;
+    --surface-container-lowest: #0b101c;
+    --surface-container-low: #131b2e;
+    --surface-container: #1b243b;
+    --surface-container-high: #242f4a;
+    --surface-container-highest: #2e3a59;
+    --on-surface: #eef0ff;
+    --on-surface-variant: #c7c4d8;
+    --inverse-surface: #faf8ff;
+    --inverse-on-surface: #131b2e;
+  }
+
+  .theme-slate {
+    --background: #0f172a;
+    --on-background: #f8fafc;
+    --primary: #38bdf8;     /* Cyan accent */
+    --on-primary: #0284c7;
+    --primary-container: #0369a1;
+    --on-primary-container: #e0f2fe;
+    --secondary: #a78bfa;   /* Violet accent */
+    --outline: #475569;
+    --outline-variant: #1e293b;
+    --surface: #0f172a;
+    --surface-container-lowest: #020617;
+    --surface-container-low: #0f172a;
+    --surface-container: #1e293b;
+    --surface-container-high: #334155;
+    --surface-container-highest: #475569;
+    --on-surface: #f8fafc;
+    --on-surface-variant: #cbd5e1;
+    --inverse-surface: #f8fafc;
+    --inverse-on-surface: #0f172a;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
