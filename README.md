@@ -2,7 +2,7 @@
 
 A modern, high-performance, distraction-free Markdown Editor and Renderer. Built with React and TypeScript.
 
-![MarkFlow](https://via.placeholder.com/800x400?text=MarkFlow+Preview)
+![MarkFlow](docs/markflow.png)
 
 ## Features
 
