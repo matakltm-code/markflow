@@ -63,17 +63,18 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       );
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    code({ inline, className, children, ...props }: any) {
+    code({ className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || '');
       const isMermaid = match && match[1] === 'mermaid';
+      const isInline = !className && !String(children).includes('\n');
 
-      if (!inline && isMermaid) {
+      if (!isInline && isMermaid) {
         return <MermaidViewer code={String(children).replace(/\n$/, '')} />;
       }
 
       const lang = match ? match[1] : 'text';
 
-      if (!inline) {
+      if (!isInline) {
         return (
           <div className="bg-surface-container-highest rounded-lg overflow-hidden border border-outline-variant my-6">
             <div className="px-4 py-2 bg-on-background/5 flex justify-between items-center">

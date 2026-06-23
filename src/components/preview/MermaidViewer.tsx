@@ -2,6 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import { Maximize2, Minimize2 } from 'lucide-react';
 
+// Initialize mermaid once at the module level to avoid repeated initialization during React state updates
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  themeVariables: {
+    fontFamily: 'Inter, sans-serif',
+  },
+  securityLevel: 'loose',
+});
+
 interface MermaidViewerProps {
   code: string;
 }
@@ -13,28 +23,33 @@ export function MermaidViewer({ code }: MermaidViewerProps) {
   const [id] = useState(() => `mermaid-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      themeVariables: {
-        fontFamily: 'Inter, sans-serif',
-      },
-      securityLevel: 'loose',
-    });
+    let isCurrent = true;
 
     const renderGraph = async () => {
       try {
         if (containerRef.current) {
-          const { svg } = await mermaid.render(id, code);
-          setSvgContent(svg);
+          // Pre-validate diagram syntax to catch errors before triggering mermaid's render
+          await mermaid.parse(code);
+          if (isCurrent) {
+            const { svg } = await mermaid.render(id, code);
+            if (isCurrent) {
+              setSvgContent(svg);
+            }
+          }
         }
       } catch (err) {
         console.error('Mermaid rendering failed:', err);
-        setSvgContent(`<div class="text-error text-sm font-mono p-4 border border-error-container bg-error-container/10 rounded">Failed to render diagram</div>`);
+        if (isCurrent) {
+          setSvgContent(`<div class="text-error text-sm font-mono p-4 border border-error-container bg-error-container/10 rounded">Failed to render diagram</div>`);
+        }
       }
     };
 
     renderGraph();
+
+    return () => {
+      isCurrent = false;
+    };
   }, [code, id]);
 
   return (
