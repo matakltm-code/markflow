@@ -1,5 +1,7 @@
 # MarkFlow
 
+[![CI](https://github.com/matakltm-code/markflow/actions/workflows/ci.yml/badge.svg)](https://github.com/matakltm-code/markflow/actions/workflows/ci.yml) [![Deploy to GitHub Pages](https://github.com/matakltm-code/markflow/actions/workflows/deploy.yml/badge.svg)](https://github.com/matakltm-code/markflow/actions/workflows/deploy.yml)
+
 A modern, high-performance, distraction-free Markdown Editor and Renderer. Built with React and TypeScript.
 
 ![MarkFlow](docs/markflow.png)
