@@ -1,0 +1,98 @@
+===============================================================================
+MARKFLOW TECHNICAL ANALYSIS & ARCHITECTURE REPORT
+===============================================================================
+
+1. PROJECT OVERVIEW
+-------------------------------------------------------------------------------
+- Project Name: markflow
+- Project Repo URL: https://github.com/matakltm-code/markflow.git
+- Demo Site URL: Not Available / To Be Added
+
+
+2. MOTIVATION & OBJECTIVE
+-------------------------------------------------------------------------------
+MarkFlow was created to solve critical friction points in document editing and live rendering workflows. Traditional Markdown editors often suffer from input latency, heavy UI clutter, clunky preview scroll mismatches, or poor mobile rendering capabilities.
+
+The core objective of MarkFlow is to provide a modern, high-performance, distraction-free Markdown Editor and Renderer built with React and TypeScript. Key motives include:
+- Zero-Latency Input & Live Synchronization: Offering instant visual feedback with split-pane synchronized scrolling without compromising editor responsiveness.
+- Seamless Visual Diagramming: Native support for Mermaid.js diagrams directly within standard Markdown code blocks (`mermaid`).
+- Lightweight & Portable Architecture: Eliminating heavy global state frameworks in favor of React hooks and direct DOM manipulation for maximum speed and simplicity.
+- Cross-Platform Accessibility: Providing an adaptable UI that seamlessly switches between a dual-pane desktop workstation layout and a mobile tabbed interface.
+
+
+3. TECH STACK & ARCHITECTURE
+-------------------------------------------------------------------------------
+Framework & Core Runtime:
+- React 19 (`react`, `react-dom` v19.0.1)
+- TypeScript 5.8 (Strict type checking)
+- Vite 6.2 (Next-generation frontend tooling and bundler)
+
+Styling & UI Components:
+- Tailwind CSS v4 (`@tailwindcss/vite` v4.1.14)
+- Lucide React (v0.546.0 icon set)
+- Motion (`motion` v12.23.24 for fluid UI transitions)
+- `clsx` & `tailwind-merge` (Utility class combination via `cn()`)
+
+Markdown Parsing & Rendering Pipeline:
+- `react-markdown` (v10.1.0 React Markdown component parser)
+- `remark-gfm` (v4.0.1 GitHub Flavored Markdown support: tables, strikethrough, task lists)
+- `rehype-raw` (v7.0.0 for inline HTML rendering support)
+- `mermaid` (v11.15.0 client-side graph & diagram rendering)
+
+Document Export Utilities:
+- `html2pdf.js` (v0.14.0 for converting rendered DOM preview trees to formatted PDF files)
+- Native HTML5 Blob API (For instant `.md` file compilation and download)
+
+Backend / Server Setup:
+- Express.js (v4.21.2 available in dependencies for server-side hosting scenarios)
+- `@google/genai` (v2.4.0 integration ready)
+
+Architectural Pattern:
+- Component-Based Decoupled Architecture: Clean separation into `components/editor`, `components/preview`, `components/ui`, `hooks`, and `utils`.
+- Unidirectional Data Flow with Ref-Based Hooks: Raw Markdown state resides at the root (`App.tsx`), while synchronized scrolling uses React `useRef` hooks to interact directly with DOM nodes, preventing unnecessary React re-render cycles.
+- Dynamic Theme Engine: Root CSS variable swapping controlled via top-level HTML element classes (`light`, `dark`, `theme-slate`), mapped directly to Tailwind utility tokens.
+
+
+4. ACCOMPLISHED FEATURES
+-------------------------------------------------------------------------------
+Editor Features:
+- Split-Pane Text Area: Specialized text editor pane with active dynamic line numbering.
+- Integrated File Importer: Direct file upload handler for `.md` and `.txt` files.
+- Quick Editor Actions: Direct buttons for Select All and Clipboard Paste with automatic cursor positioning.
+- Synchronized Line Gutter: Automatic scroll-syncing between the textarea line numbers and the editor content body.
+
+Preview & Visual Features:
+- High-Fidelity Markdown Rendering: Support for headers, lists, blockquotes, inline formatting, code blocks, images, and HTML tables.
+- Interactive Code Blocks: Custom styled syntax blocks with language identifiers and a one-click "Copy Code" button.
+- Mermaid.js Diagram Engine: Inline parsing of ````mermaid` blocks into rendered SVG diagrams.
+- Fullscreen Diagram Viewer: Interactive modal to view diagrams in high resolution with backdrop blur and escape/close controls.
+
+Theme & Layout Features:
+- Multi-Theme Switcher: Real-time switching between Light, Dark, and Cyberpunk Slate themes with dynamic color palette transitions.
+- Responsive Mobile Viewport: Automatic layout shift from desktop side-by-side split view to a mobile bottom tab bar (`Write` / `Preview` toggler).
+- Live Syncing Status Indicator: Animated pulsing header indicator displaying real-time synchronization status.
+
+Export & Portability Features:
+- Markdown File Export: Instant raw `.md` file download (`downloadRawMarkdown`).
+- Client-Side PDF Generation: Formatted, styled PDF document generation using `html2pdf.js` targeting the live preview container.
+- Clipboard Export: One-click "Copy All" action to copy full document Markdown to system clipboard.
+
+
+5. COMPLEX CHALLENGES & ARCHITECTURAL HIGHLIGHTS
+-------------------------------------------------------------------------------
+1. Bi-Directional Lock-Protected Scroll Synchronization (`useScrollSync.ts`):
+   - Challenge: Syncing scrolling between two independent scrollable containers (`textarea` and preview `div`) can cause infinite feedback loops where scrolling element A triggers element B, which then triggers element A back.
+   - Solution: Implemented a custom React hook `useScrollSync` using `isScrollingRef` as a temporary scroll lock ('editor' | 'preview' | null). When element A scrolls, the lock is engaged, calculating relative percentage `scrollTop / (scrollHeight - clientHeight)` and applying it to element B. A debounced timeout releases the lock once scrolling stops.
+
+2. Custom Mermaid.js Syntax Parsing & Asynchronous SVG Injection (`MermaidViewer.tsx`):
+   - Challenge: Intercepting Markdown code blocks, validating diagram syntax without throwing unhandled React rendering errors, and rendering SVG asynchronously.
+   - Solution: Extended `react-markdown` components mapping to catch `language-mermaid` blocks and delegate rendering to `<MermaidViewer />`. The component uses `mermaid.parse(code)` for pre-validation prior to calling `mermaid.render()`. Unique dynamic IDs are generated per instance to avoid DOM collisions, and clean unmount guards (`isCurrent` flag) prevent race conditions during rapid editor keystrokes.
+
+3. Dynamic Multi-Theme Token Architecture (`index.css` & `Toolbar.tsx`):
+   - Challenge: Supporting full dark/light/slate themes with Tailwind CSS v4 without introducing runtime CSS-in-JS dependencies.
+   - Solution: Utilized Tailwind v4 `@theme` variables mapped to semantic CSS custom properties (`--color-background`, `--color-primary`, `--color-surface-container`, etc.). `Toolbar.tsx` toggles root classes (`light`, `dark`, `theme-slate`), instantly remapping color definitions across the application without forcing component re-mounts.
+
+4. Formatted DOM-to-PDF Conversion Engine (`exporters.ts` & `PreviewPane.tsx`):
+   - Challenge: Converting raw React/HTML rendered Markdown preview structures into multi-page PDF documents while preserving fonts, padding, and layout.
+   - Solution: Wrapped preview output inside a dedicated `#pdf-export-content` container with standard print boundaries. `exportToPDF` configures `html2pdf.js` with `html2canvas` (scale: 2, CORS enabled) and `jsPDF` (A4 format, portrait) to produce crisp vector-like output directly in the browser without server dependencies.
+===============================================================================
